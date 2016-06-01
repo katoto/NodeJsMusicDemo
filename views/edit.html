@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>我的音乐 - 首页</title>
+  <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.css">
+  <style>
+  body {
+    font-family: Microsoft Yahei;
+  }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="page-header">
+      <h1><a href="/">我的音乐</a><small> - 编辑歌曲</small></h1>
+    </div>
+  </div>
+  <div class="container">
+  <!-- 表单提交
+  action：当你点击submit 的时候，表单会自动找到 action 属性，得到里面的值，然后发起一个 http 请求，那么请求的url就是 action 属性中指定的 值
+
+  method：表单默认不指定 method 的情况下，method就是 get 请求
+  所以说，如果想让表单发起一个 post  http 请求，需要手动指定
+
+  表单提交，表单中的表单元素一定要有 name 属性，才会提交
+   -->
+    <form id="form" action="/edit?mid=<<music.id>>" method="post">
+      <div class="form-group">
+        <label for="">歌曲编号</label>
+
+        <input type="text" name="id" value="<<music.id>>" disabled class="form-control" placeholder="请输入歌曲编号">
+      </div>
+      <div class="form-group">
+        <label for="">歌曲标题</label>
+        <input type="text" name="title" value="<<music.title>>" class="form-control" placeholder="请输入歌曲标题">
+      </div>
+      <div class="form-group">
+        <label for="">歌曲时长</label>
+        <input type="text" name="time" value="<<music.time>>" class="form-control" placeholder="请输入歌曲时长">
+      </div>
+      <div class="form-group">
+        <label for="">歌手</label>
+        <input type="text" name="singer" value="<<music.singer>>" class="form-control" placeholder="请输入歌手姓名">
+      </div>
+      <div class="form-group">
+        <label for="">歌曲文件</label>
+        <input type="file" id="file">
+        <p class="help-block">请上传歌曲文件.</p>
+      </div>
+      <button type="submit" class="btn btn-success">提交修改</button>
+    </form>
+  </div>
+  <script src="/node_modules/jquery/dist/jquery.js"></script>
+  <script src="/node_modules/bootstrap/dist/js/bootstrap.js"></script>
+  <script src="/node_modules/art-template/dist/template.js"></script>
+  <script>
+    
+  </script>
+</body>
+
+</html>

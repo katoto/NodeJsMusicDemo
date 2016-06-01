@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>我的音乐 - 首页</title>
+  <link rel="stylesheet" href="/node_modules/bootstrap/dist/css/bootstrap.css">
+  <style>
+  .ply {
+    cursor: pointer;
+  }
+  
+  body {
+    font-family: Microsoft Yahei;
+  }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="page-header">
+      <h1><a href="/">我的音乐</a><small> - 首页</small></h1>
+    </div>
+    <!-- a 就是 get 请求 -->
+    <a href="/add" class="btn btn-success">添加歌曲</a>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-7">
+        <table class="table table-striped table-hover">
+          <thead>
+            <th>编号</th>
+            <th>歌曲标题</th>
+            <th>时长</th>
+            <th>歌手</th>
+            <th>操作</th>
+            <th></th>
+          </thead>
+          <tbody id="list_container">
+          </tbody>
+        </table>
+      </div>
+      <div class="col-md-5">
+        <p>
+          当前正在播放：<span id="cur_music"></span>
+        </p>
+        <audio id="audio" autoplay src="" controls="controls"></audio>
+      </div>
+    </div>
+  </div>
+  <script src="/node_modules/jquery/dist/jquery.js"></script>
+  <script src="/node_modules/bootstrap/dist/js/bootstrap.js"></script>
+  <script src="/node_modules/art-template/dist/template.js"></script>
+  <script type="text/template" id="template">
+    {{each musicList}}
+    <tr>
+      <td>
+        {{ $value.id }}
+      </td>
+      <td>
+        {{ $value.title }}
+      </td>
+      <td>
+        {{ $value.time }}
+      </td>
+      <td>
+        {{ $value.singer }}
+      </td>
+      <td>
+        <a href="/edit?mid={{ $value.id }}">编辑</a>
+        <a class="remove" href="/remove?mid={{ $value.id }}">删除</a>
+      </td>
+      <td>
+        <span data-src="{{ $value.src }}" class="glyphicon glyphicon-play-circle ply"></span>
+      </td>
+    </tr>
+    {{/each}}
+  </script>
+  <script>
+
+  var $musicContainer = $('#list_container');
+  var $audio = $('#audio');
+
+  loadMusicList();
+
+  function loadMusicList() {
+    $.ajax({
+      url: '/music',
+      type: 'get',
+      dataType: 'json', // 指定了该属性，jQuery 内部的 ajax 会自动帮你把字符串解析为 json 对象，如果服务器给我的数据不符合 json 格式字符串规范，那么转换失败，会报错(以前的版本)
+      success: function(data) {
+        // 浏览器已经将 后台服务器传递给我们的二进制数据解析成了字符串了
+        // 因为我们自己知道 我们传递的是 json 格式的字符串
+        // 所以我们就可以直接使用 JSON.parse(str) 将json 格式的字符串转换为一个 json 对象
+        // data = JSON.parse(data);
+        // console.log(data);
+
+        // 我们的 jQuery 的 ajax 可以通过指定 dataType 自动将服务器返回的数据转换为 你指定的类型
+
+        var htmlStr = template('template', data);
+
+
+        $musicContainer.html(htmlStr);
+      }
+    });
+  }
+
+  // ajax click
+  $('body').on('click', '.ply', function() {
+    // jquery 中有一个方法 data，需要传入自定义数据的逻辑名
+    var src = $(this).data('src');
+    $audio.attr('src', src);
+  });
+
+  $('body').on('click', '.remove', function(e) {
+    e.preventDefault();
+    var href = $(this).attr('href');
+    if (confirm('您真的要删除吗？')) {
+      $.ajax({
+        url: href,
+        type: 'get',
+        dataType: 'json',
+        success: function(data) {
+          console.log(data);
+          if (data.code == '6000') {
+            loadMusicList();
+          }
+        }
+      });
+    }
+  });
+  </script>
+</body>
+
+</html>
